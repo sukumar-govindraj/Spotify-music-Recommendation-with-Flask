@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+</head>
+<body>
+    <h1>Music Recommendation System</h1>
+    <form id="recommendationForm">
+        <label for="track_id">Track ID:</label>
+        <input type="text" id="track_id" required><br>
+        <button type="button" onclick="getRecommendations()">Get Recommendations</button>
+    </form>
+    <div id="recommendations"></div>
+
+    <script>
+        async function getRecommendations() {
+            const trackId = document.getElementById('track_id').value;
+
+            const response = await fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ track_id: trackId }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                displayRecommendations(data.recommendations);
+            } else {
+                console.error('Failed to get recommendations');
+            }
+        }
+
+        function displayRecommendations(recommendations) {
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = '';
+            recommendations.forEach(rec => {
+                const recDiv = document.createElement('div');
+                recDiv.textContent = `${rec.track_name} by ${rec.artists} from the album ${rec.album_name}`;
+                recommendationsDiv.appendChild(recDiv);
+            });
+        }
+    </script>
+</body>
+</html>

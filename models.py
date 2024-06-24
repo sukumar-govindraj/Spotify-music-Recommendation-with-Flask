@@ -1,0 +1,30 @@
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Track(db.Model):
+    __tablename__ = 'tracks'
+    id = db.Column(db.Integer, primary_key=True)
+    track_id = db.Column(db.String(50), unique=True, nullable=False)
+    artist1 = db.Column(db.String(800), nullable=True)
+    artist2 = db.Column(db.String(800), nullable=True)
+    artist3 = db.Column(db.String(800), nullable=True)
+    artist4 = db.Column(db.String(800), nullable=True)
+    artist5 = db.Column(db.String(800), nullable=True)
+    album_name = db.Column(db.String(800), nullable=False)
+    track_name = db.Column(db.String(800), nullable=False)
+    popularity = db.Column(db.Integer, nullable=False)
+    duration_ms = db.Column(db.Integer, nullable=False)
+    explicit = db.Column(db.Boolean, nullable=False)
+    danceability = db.Column(db.Float, nullable=False)
+    energy = db.Column(db.Float, nullable=False)
+    loudness = db.Column(db.Float, nullable=False)
+    mode = db.Column(db.Integer, nullable=False)
+    speechiness = db.Column(db.Float, nullable=False)
+    acousticness = db.Column(db.Float, nullable=False)
+    instrumentalness = db.Column(db.Float, nullable=False)
+    liveness = db.Column(db.Float, nullable=False)
+    valence = db.Column(db.Float, nullable=False)
+    tempo = db.Column(db.Float, nullable=False)
+    time_signature = db.Column(db.Integer, nullable=False)
+    track_genre = db.Column(db.String(800), nullable=False)
