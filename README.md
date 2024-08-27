@@ -90,10 +90,12 @@ The user interface is built using Flask and simple HTML. Users can input a track
 ### UI Screenshots
 
 **Home Page:**
-![Home Page](images/home_page_screenshot.png)
+![image](https://github.com/user-attachments/assets/56805287-1984-42a6-a715-14588895ac67)
+
+
 
 **Recommendation Results:**
-![Recommendation Results](images/recommendation_results_screenshot.png)
+![image](https://github.com/user-attachments/assets/13e7de7b-0ad8-496c-97d2-8bf5bd1abd2c)
 
 ## How to Use
 
