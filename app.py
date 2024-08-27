@@ -5,15 +5,15 @@ import numpy as np
 import urllib
 from sklearn.metrics.pairwise import cosine_similarity
 import joblib
-import pandas as pd  # Add this import
-from models import db, Track  # Import db and Track from models
+import pandas as pd
+from models import db, Track
 
 app = Flask(__name__)
 
 # SQL Server configuration using Windows Authentication
 params = urllib.parse.quote_plus(r"DRIVER={ODBC Driver 17 for SQL Server};"
-                                r"SERVER=SUKUMAR\SQLEXPRESS;"  # Use raw string for server name
-                                r"DATABASE=MusicRecommendationDB;"  # Use your created database name
+                                r"SERVER=SUKUMAR\SQLEXPRESS;"
+                                r"DATABASE=MusicRecommendationDB;"
                                 r"Trusted_Connection=yes;")
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mssql+pyodbc:///?odbc_connect={params}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -32,13 +32,22 @@ def index():
 def recommend():
     try:
         user_data = request.json
-        track_id = user_data['track_id']
-        
-        # Retrieve the track from the database
-        track = Track.query.filter_by(track_id=track_id).first()
+        track_name = user_data.get('track_name')
+        artist_name = user_data.get('artist_name', None)  # Get the artist name if provided
+
+        # Debugging: Log the received data
+        print(f"Received track_name: {track_name}, artist_name: {artist_name}")
+
+        # Modify the query to include both track name and artist name if provided
+        query = Track.query.filter(Track.track_name.ilike(f"%{track_name}%"))
+        if artist_name:
+            query = query.filter(Track.artist1.ilike(f"%{artist_name}%"))
+
+        track = query.first()
         
         if not track:
-            return jsonify({'recommendations': []})
+            print("Track not found")
+            return jsonify({'error': 'Track not found'}), 404
 
         # Extract features for the provided track
         features = {
@@ -94,14 +103,29 @@ def recommend():
         # Get the indices of the top 10 most similar tracks
         top_indices = similarities.argsort()[-10:][::-1]
 
-        # Get the corresponding tracks
-        recommended_tracks = [all_tracks[i] for i in top_indices]
+        # Enforce diversity in the recommendations
+        recommended_tracks = []
+        seen_tracks = set()
+
+        for i in top_indices:
+            recommended_track = all_tracks[i]
+            if recommended_track.track_name not in seen_tracks:
+                recommended_tracks.append(recommended_track)
+                seen_tracks.add(recommended_track.track_name)
+
+            if len(recommended_tracks) >= 10:
+                break
+
         recommendations = [{'track_name': track.track_name, 'artists': ';'.join(filter(None, [track.artist1, track.artist2, track.artist3, track.artist4, track.artist5])), 'album_name': track.album_name} for track in recommended_tracks]
+
+        # Debugging: Log the recommendations
+        print(f"Recommendations: {recommendations}")
 
         return jsonify({'recommendations': recommendations})
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/check-data')
 def check_data():
