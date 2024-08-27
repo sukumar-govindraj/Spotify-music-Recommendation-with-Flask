@@ -70,11 +70,9 @@ Before building the recommendation model, we conducted an Exploratory Data Analy
 - Correlation between features like danceability, energy, and popularity.
 - Visualization of song features using histograms and scatter plots.
 
-**Example visualizations:**
-- Genre Distribution:
-  ![Genre Distribution](images/genre_distribution.png)
-- Feature Correlation:
-  ![Feature Correlation](images/feature_correlation.png)
+![output (13)](https://github.com/user-attachments/assets/0ef9271e-ff7b-436c-87b0-f9612678104e)
+![output (10)](https://github.com/user-attachments/assets/791ec467-895b-42c0-8135-a1b6a28e07b5)
+
 
 ## Model Training
 
